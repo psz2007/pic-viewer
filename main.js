@@ -52,11 +52,11 @@ function refreshData() {
 function getData(re = true) {
     if (localStorage["pic-view-data"] == undefined || re) {
         refreshData();
-        localStorage["pic-view-data"] = data;
-        localStorage["pic-view-dts"] = dts;
+        localStorage["pic-view-data"] = JSON.stringify(data);
+        localStorage["pic-view-dts"] = JSON.stringify(dts);
     } else {
-        data = localStorage["pic-view-data"];
-        dts = localStorage["pic-view-dts"];
+        data = JSON.parse(localStorage["pic-view-data"]);
+        dts = JSON.parse(localStorage["pic-view-dts"]);
     }
 }
 function buildMainPage() {
