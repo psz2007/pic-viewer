@@ -132,7 +132,7 @@ function showPic() {
     const urlp = new URLSearchParams(window.location.search);
     let t = urlp.get("dt"), p = urlp.get("pth").replaceAll("_", "/"), c = urlp.get("id");
     let lst = data[t][p];
-    document.getElementById("main").innerHTML = `<div class='ui borderless menu'>${initMenu(c, lst.length)}</div><img src="../random-pic/pic/${t}${p}/${lst[c]}" style="text-align: center; max-width: inherit;">`;
+    document.getElementById("main").innerHTML = `<div class='ui borderless menu'>${initMenu(c, lst.length)}</div><img src="../random-pic/pic/${t}${p}/${lst[c]}" style="max-width: -webkit-fill-available; width: 100%;">`;
 }
 function jumpToId(i) {
     const urlp = new URLSearchParams(window.location.search);
@@ -171,7 +171,7 @@ function showRandPic() {
                 continue;
             if (p < data[i][j].length) {
                 document.getElementById("main").innerHTML =
-                    `<div><img src="../random-pic/pic/${i}${j}/${data[i][j][p]}" style="text-align: center; max-width: inherit;"></div>`;
+                    `<div><img src="../random-pic/pic/${i}${j}/${data[i][j][p]}" style="max-width: -webkit-fill-available; width: 100%;"></div>`;
                 return;
             } else {
                 p -= data[i][j].length;
