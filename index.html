@@ -16,10 +16,12 @@
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9KWYFHSDHJ"></script>
 <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-9KWYFHSDHJ');
+    if (window.location.hostname !== "localhost") {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-9KWYFHSDHJ');
+    }
 </script>
 
 <body>
@@ -30,6 +32,10 @@
             <a class="ui item" onclick="getData(true)">
                 <i class="list sync icon"> </i>
                 刷新列表
+            </a>
+            <a class="ui item" href=".?rand">
+                <i class="random icon"> </i>
+                随机图
             </a>
         </div>
     </div>
@@ -43,14 +49,18 @@
                 href="https://semantic-ui.com">Semantic-UI</a>.
             <br />
             图源侵删。
+            <br/>
+            请在每次更新后点击“刷新列表”，如果出错请联系 ↑
         </p>
     </div>
     <script>
         const urlp = new URLSearchParams(window.location.search);
-        if (urlp.get("id") != null) {
+        if (urlp.get("id") !== null) {
             showPic();
-        } else if (urlp.get("dt") != null) {
+        } else if (urlp.get("dt") !== null) {
             showLib();
+        } else if (window.location.href.match('rand')) {
+            showRandPic();
         } else {
             buildMainPage();
         }

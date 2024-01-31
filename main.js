@@ -18,7 +18,7 @@ function refreshData() {
             if (sta === 200) {
                 lst = JSON.parse(txt);
             } else {
-                console.log(sta);
+                console.error(sta);
                 throw "爬取图片列表失败。";
             }
         } catch (e) {
@@ -31,19 +31,16 @@ function refreshData() {
         if (data[dt] === undefined) {
             data[dt] = {};
             data[dt].cnt = 0;
+            dts.push({
+                date: dt
+            });
         }
         if (data[dt][pth] == undefined) {
             data[dt][pth] = [];
-            data[dt][pth].cnt = 0;
         }
         data[dt][pth].push(nm);
         data[dt].cnt++;
-        data[dt][pth].cnt++;
-        dts.push({
-            date: dt
-        });
     }
-    dts = [...new Set(dts)];
     for (let i in dts) {
         dts[i].message = `(${data[dts[i].date].cnt})`;
         dts[i].date = new Date(dts[i].date);
@@ -52,6 +49,7 @@ function refreshData() {
 function getData(re = true) {
     if (localStorage["pic-view-data"] == undefined || re) {
         refreshData();
+        localStorage.clear();
         localStorage["pic-view-data"] = JSON.stringify(data);
         localStorage["pic-view-dts"] = JSON.stringify(dts);
     } else {
@@ -104,7 +102,7 @@ function showLib() {
         tmp.innerHTML =
             `<div class='ui card'>
             <div class='content'>
-                <a class='header' href='?dt=${t}&pth=${i.replaceAll("/", "_")}&id=0'>${i}:${data[t][i].cnt}</a>
+                <a class='header' href='?dt=${t}&pth=${i.replaceAll("/", "_")}&id=0'>${i}:${data[t][i].length}</a>
             </div>
         </div>`;
         document.getElementById("pic-list").appendChild(tmp);
@@ -134,7 +132,7 @@ function showPic() {
     const urlp = new URLSearchParams(window.location.search);
     let t = urlp.get("dt"), p = urlp.get("pth").replaceAll("_", "/"), c = urlp.get("id");
     let lst = data[t][p];
-    document.getElementById("main").innerHTML = `<div class='ui borderless menu'>${initMenu(c, lst.cnt)}</div><img src="../random-pic/pic/${t}${p}/${lst[c]}" style="max-width: inherit;">`;
+    document.getElementById("main").innerHTML = `<div class='ui borderless menu'>${initMenu(c, lst.length)}</div><img src="../random-pic/pic/${t}${p}/${lst[c]}" style="text-align: center; max-width: inherit;">`;
 }
 function jumpToId(i) {
     const urlp = new URLSearchParams(window.location.search);
@@ -152,4 +150,33 @@ function backToLib() {
     urlp.delete("id");
     urlp.delete("pth");
     window.location.search = urlp;
+}
+
+function showRandPic() {
+    getData();
+    if (!dts.length) {
+        alert("图片导入失败");
+        return;
+    }
+    let cnt = 0;
+    for (let i in dts) {
+        cnt += parseInt(/(\d+)/.exec(dts[i].message));
+    }
+    let p = Math.floor(Math.random() * cnt);
+    for (let i in data) {
+        if (i == "cnt")
+            continue;
+        for (let j in data[i]) {
+            if (j == "cnt")
+                continue;
+            if (p < data[i][j].length) {
+                document.getElementById("main").innerHTML =
+                    `<div><img src="../random-pic/pic/${i}${j}/${data[i][j][p]}" style="text-align: center; max-width: inherit;"></div>`;
+                return;
+            } else {
+                p -= data[i][j].length;
+            }
+        }
+    }
+    alert("!");
 }
